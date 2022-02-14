@@ -4,7 +4,7 @@ setup(
     name='cbpcommon',
     version='0.0.1',
     packages=[''],
-    url='',
+    url='https://github.com/Crypto-Bot-Platform/cbpcommon',
     license='',
     author='Boris Tsekinovsky',
     author_email='t.boris@gmail.com',
