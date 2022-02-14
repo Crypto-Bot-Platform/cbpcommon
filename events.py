@@ -3,7 +3,8 @@ import io
 import threading
 import time
 
-import avro
+import avro.io
+import avro.schema
 from confluent_kafka import Producer, Consumer, KafkaError
 from confluent_kafka.admin import AdminClient, NewTopic
 
@@ -63,7 +64,7 @@ class EventManager:
 
         try:
             while True:
-                msg = consumer.poll(timeout=1)
+                msg = consumer.poll(timeout=1000)
                 if msg is None:
                     continue
                 if msg.error():
@@ -107,9 +108,13 @@ if __name__ == "__main__":
 
 
     def send_commands():
+        count = 0
         while True:
             em.send_command_to_address('unit-test', schema, {"name": "Test", "value": str(datetime.datetime.now())})
             time.sleep(2)
+            count += 1
+            if count == 10:
+                break
 
 
     x = threading.Thread(target=send_commands)
@@ -123,7 +128,6 @@ if __name__ == "__main__":
     y = threading.Thread(target=em.wait_for_command, args=('unit-test', schema, handler,))
     y.start()
 
-    time.sleep(600)
+    time.sleep(60)
 
     em.delete_address("unit-test")
-    time.sleep(1)
