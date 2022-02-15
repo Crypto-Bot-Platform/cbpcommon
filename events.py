@@ -64,7 +64,7 @@ class EventManager:
 
         try:
             while True:
-                msg = consumer.poll(timeout=1000)
+                msg = consumer.poll(timeout=1)
                 if msg is None:
                     continue
                 if msg.error():
