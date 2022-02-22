@@ -100,6 +100,7 @@ if __name__ == "__main__":
         "name": "Test",
         "type": "record",
         "fields": [
+            {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis"},
             {"name": "name", "type": "string"},
             {"name": "value", "type": "string"}            
         ]
@@ -109,12 +110,14 @@ if __name__ == "__main__":
 
     def send_commands():
         count = 0
-        while True:
-            em.send_command_to_address('unit-test', schema, {"name": "Test", "value": str(datetime.datetime.now())})
-            time.sleep(2)
+        while count < 10:
+            em.send_command_to_address('unit-test', schema, {
+                "timestamp": int(datetime.datetime.timestamp(datetime.datetime.now())),
+                "name": "Test",
+                "value": str(datetime.datetime.now())})
+            time.sleep(10)
             count += 1
-            if count == 10:
-                break
+
 
 
     x = threading.Thread(target=send_commands)
@@ -122,12 +125,14 @@ if __name__ == "__main__":
 
 
     def handler(obj):
+        print(datetime.datetime.timestamp(datetime.datetime.now()))
+        print(obj['timestamp'])
         print(f"{datetime.datetime.now()}: {obj}")
 
 
     y = threading.Thread(target=em.wait_for_command, args=('unit-test', schema, handler,))
     y.start()
 
-    time.sleep(60)
+    time.sleep(100)
 
     em.delete_address("unit-test")
