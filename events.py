@@ -8,7 +8,6 @@ import avro.schema
 from confluent_kafka import Producer, Consumer, KafkaError
 from confluent_kafka.admin import AdminClient, NewTopic
 
-kafka_host = '10.0.0.212'
 
 class MessageException(Exception):
     def __init__(self, m):
@@ -18,10 +17,10 @@ class MessageException(Exception):
 class EventManager:
     def __init__(self):
         self.adminClient = AdminClient({
-            "bootstrap.servers": f"{kafka_host}:9092"
+            "bootstrap.servers": "10.0.0.212:9092"
         })
         self.producerClient = Producer({
-            "bootstrap.servers": f"{kafka_host}:9092"
+            "bootstrap.servers": "10.0.0.212:9092"
         })
 
     def create_address(self, address: str):
@@ -36,7 +35,7 @@ class EventManager:
     @staticmethod
     def send_command_to_address(address: str, schema_str: str, command_object: object):
         record_schema = avro.schema.parse(schema_str)
-        conf = {'bootstrap.servers': f"{kafka_host}:9092"}
+        conf = {'bootstrap.servers': "10.0.0.212:9092"}
 
         producer = Producer(**conf)
 
@@ -54,7 +53,7 @@ class EventManager:
     @staticmethod
     def wait_for_command(address: str, schema_str: str, on):
 
-        conf = {'bootstrap.servers': f"{kafka_host}:9092",
+        conf = {'bootstrap.servers': "10.0.0.212:9092",
                 'group.id': 'command.query',
                 'default.topic.config': {'auto.offset.reset': 'smallest'}}
 
