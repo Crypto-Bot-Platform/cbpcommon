@@ -6,7 +6,7 @@ import time
 import avro.io
 import avro.schema
 from confluent_kafka import Producer, Consumer, KafkaError
-from confluent_kafka.admin import AdminClient, NewTopic
+from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions
 
 
 class MessageException(Exception):
@@ -26,6 +26,10 @@ class EventManager:
     def create_address(self, address: str):
         if address not in self.adminClient.list_topics().topics:
             self.adminClient.create_topics([NewTopic(address, 1, 1)])
+
+    def modify_mailbox_size(self, address: str, size: int):
+        if address in self.adminClient.list_topics().topics:
+            self.adminClient.create_partitions([NewPartitions(address, size)])
 
     def delete_address(self, address: str):
         if address not in self.adminClient.list_topics().topics:
@@ -94,6 +98,7 @@ class EventManager:
 if __name__ == "__main__":
     em = EventManager()
     em.create_address('unit-test')
+    em.modify_mailbox_size('unit-test', 3)
     schema = """
     {
         "namespace": "confluent.io.examples.serialization.avro",
