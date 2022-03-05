@@ -108,9 +108,8 @@ class EventManager:
                     reader = avro.io.DatumReader(schema)
                     try:
                         decoded_msg = reader.read(decoder)
-                        on(decoded_msg)
-                        # x = threading.Thread(target=on, args=(decoded_msg,))
-                        # x.start()
+                        # on(decoded_msg)
+                        threading.Thread(target=on, args=(decoded_msg,)).start()
                     except AssertionError as e:
                         self.log.error(f"ERROR: {e}")
 
