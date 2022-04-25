@@ -66,7 +66,7 @@ class Logger:
     def logger(self, level, message, *args):
         args_message = ''
 
-        if args:
+        if args or (len(args) == 1 and args[0] == ()):
             args = jsonpickle.encode(args)
             args_message = " - args:[ " + args + " ]"
 
