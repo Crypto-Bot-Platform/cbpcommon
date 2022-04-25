@@ -25,8 +25,7 @@ class Elastic:
             self.es.index(index="logs-" + '{0:%Y-%m-%d}'.format(datetime.now()), doc_type="_doc", document=body)
             pass
         except Exception as e:
-            print("Elasticsearch unavailable")
-            print("An exception occurred [" + jsonpickle.encode(e) + " ]")
+            print("Elasticsearch unavailable: An exception occurred [", e, "]")
             pass
 
     def async_post(self, severity, message, args):

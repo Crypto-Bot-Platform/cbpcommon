@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='cbpcommon',
-    version='0.0.14',
+    version='0.0.15',
     url='https://github.com/Crypto-Bot-Platform/cbpcommon',
     license='MIT',
     author='Boris Tsekinovsky',

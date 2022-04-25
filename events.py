@@ -2,6 +2,7 @@ import datetime
 import io
 import threading
 import time
+from os import environ
 
 import avro.io
 import avro.schema
@@ -22,10 +23,9 @@ class EventManager:
         self.adminClient = AdminClient({
             "bootstrap.servers": self.kafka_address
         })
-        self.producerClient = Producer({
-            "bootstrap.servers": self.kafka_address
-        })
-        self.log = Logger('event-manager')
+        elastic_host = environ['ELASTIC_HOST'] if "ELASTIC_HOST" in environ else 'localhost'
+        elastic_port = environ['ELASTIC_PORT'] if "ELASTIC_PORT" in environ else '9200'
+        self.log = Logger('event-manager', host=elastic_host, port=int(elastic_port))
 
     def create_address(self, address: str):
         if address not in self.adminClient.list_topics().topics:
@@ -95,7 +95,7 @@ class EventManager:
                 if msg is None:
                     continue
                 if msg.error():
-                    if msg.error().code() == KafkaError._PARTITION_EOF:
+                    if msg.error().code() == KafkaError.PARTITION_EOF:
                         self.log.error('ERROR: %% %s [%d] reached end at offset %d\n' %
                                        (msg.topic(), msg.partition(),
                                         msg.offset()))
