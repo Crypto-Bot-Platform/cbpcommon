@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 
 class Elastic:
     def __init__(self, component):
-        self.es = Elasticsearch(hosts='10.0.0.212', port=9200)
+        self.es = Elasticsearch(hosts='127.0.0.1', port=9200)
         self.component = component
 
     def post(self, severity, message, args):
