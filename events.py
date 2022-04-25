@@ -18,11 +18,12 @@ class MessageException(Exception):
 
 class EventManager:
     def __init__(self, host: str = 'localhost', port: int = 9092):
+        self.kafka_address = host + ':' + str(port)
         self.adminClient = AdminClient({
-            "bootstrap.servers": host + ":" + str(port)
+            "bootstrap.servers": self.kafka_address
         })
         self.producerClient = Producer({
-            "bootstrap.servers": host + ":" + str(port)
+            "bootstrap.servers": self.kafka_address
         })
         self.log = Logger('event-manager')
 
@@ -60,10 +61,9 @@ class EventManager:
             except Exception as e:
                 self.log.error("Failed to delete topic {}: {}".format(topic, e))
 
-    @staticmethod
-    def send_command_to_address(address: str, schema_str: str, command_object: object):
+    def send_command_to_address(self, address: str, schema_str: str, command_object: object):
         record_schema = avro.schema.parse(schema_str)
-        conf = {'bootstrap.servers': "127.0.0.1:9092"}
+        conf = {'bootstrap.servers': self.kafka_address}
 
         producer = Producer(**conf)
 
@@ -80,7 +80,7 @@ class EventManager:
 
     def wait_for_command(self, address: str, schema_str: str, on):
 
-        conf = {'bootstrap.servers': "127.0.0.1:9092",
+        conf = {'bootstrap.servers': self.kafka_address,
                 'group.id': 'command.query',
                 'default.topic.config': {'auto.offset.reset': 'smallest'}}
 
@@ -144,7 +144,6 @@ if __name__ == "__main__":
                 "value": str(datetime.datetime.now())})
             time.sleep(10)
             count += 1
-
 
 
     x = threading.Thread(target=send_commands)
