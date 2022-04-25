@@ -35,7 +35,7 @@ class Elastic:
 
 class Logger:
 
-    def __init__(self, component, _id=None):
+    def __init__(self, component, _id=None, host: str = 'localhost', port: int = 9200):
         if not _id:
             self.generate_id()
         else:
@@ -43,7 +43,7 @@ class Logger:
         self.component = component
         log = logging.getLogger('internal')
         log.setLevel(logging.DEBUG)
-        self.elastic = Elastic(self.component)
+        self.elastic = Elastic(self.component, host, port)
         self.log = log
 
     def generate_id(self):
