@@ -17,12 +17,12 @@ class MessageException(Exception):
 
 
 class EventManager:
-    def __init__(self):
+    def __init__(self, host: str = 'localhost', port: int = 9092):
         self.adminClient = AdminClient({
-            "bootstrap.servers": "127.0.0.1:9092"
+            "bootstrap.servers": host + ":" + str(port)
         })
         self.producerClient = Producer({
-            "bootstrap.servers": "127.0.0.1:9092"
+            "bootstrap.servers": host + ":" + str(port)
         })
         self.log = Logger('event-manager')
 

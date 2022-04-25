@@ -8,8 +8,8 @@ from elasticsearch import Elasticsearch
 
 
 class Elastic:
-    def __init__(self, component):
-        self.es = Elasticsearch(hosts='127.0.0.1', port=9200)
+    def __init__(self, component: str, host: str = 'localhost', port: int = 9200):
+        self.es = Elasticsearch(hosts=host, port=port)
         self.component = component
 
     def post(self, severity, message, args):
